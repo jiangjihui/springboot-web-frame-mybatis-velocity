@@ -1,0 +1,69 @@
+package ${package}.controller;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
+import ${package}.model.${className};
+import ${package}.service.I${className}Service;
+import com.common.web.form.PageRequestForm;
+import com.common.web.controller.BaseController;
+
+/**
+ * ${tableComment}信息操作处理
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@RestController
+@RequestMapping("/${moduleName}/${classname}")
+public class ${className}Controller extends BaseController {
+
+	@Autowired
+	private I${className}Service ${classname}Service;
+
+
+	/**
+	 * 查询${tableComment}列表
+	 */
+	@PostMapping("/list")
+	public Object list(@RequestBody PageRequestForm form) {
+		startPage(form);
+        List<${className}> list = ${classname}Service.select${className}List(form.getParams());
+		return page(list);
+	}
+
+	/**
+	 * 新增保存${tableComment}
+	 */
+	@PostMapping("/add")
+	public Object addSave(${className} ${classname})
+	{
+		return success(${classname}Service.insert${className}(${classname}));
+	}
+
+	/**
+	 * 查找${tableComment}
+	 */
+	@GetMapping("/find/{${primaryKey.attrname}}")
+	public Object edit(@PathVariable("${primaryKey.attrname}") ${primaryKey.attrType} ${primaryKey.attrname}) {
+        return success(${classname}Service.select${className}ById(${primaryKey.attrname}));
+	}
+
+	/**
+	 * 修改保存${tableComment}
+	 */
+	@PostMapping("/edit")
+	public Object editSave(${className} ${classname}) {
+		return success(${classname}Service.update${className}(${classname}));
+	}
+
+	/**
+	 * 删除${tableComment}
+	 */
+	@PostMapping( "/remove")
+	public Object remove(String ids) {
+		return success(${classname}Service.delete${className}ByIds(ids));
+	}
+
+}
