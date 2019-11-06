@@ -1,6 +1,6 @@
 package com.business.demo.publish.dao;
 
-import com.business.demo.publish.model.Publish;
+import com.business.demo.publish.domain.Publish;
 import java.util.List;
 import java.util.Map;
 

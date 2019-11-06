@@ -1,4 +1,4 @@
-package ${package}.model;
+package ${package}.domain;
 
 import lombok.Data;
 import com.common.model.AuditBaseEntity;

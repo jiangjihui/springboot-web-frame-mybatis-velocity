@@ -1,12 +1,12 @@
-package com.business.demo.publish.service.impl;
+package com.business.demo.publish.service;
+
+import com.business.demo.publish.dao.PublishMapper;
+import com.business.demo.publish.domain.Publish;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.business.demo.publish.dao.PublishMapper;
-import com.business.demo.publish.model.Publish;
-import com.business.demo.publish.service.IPublishService;
 
 /**
  * 通知公告 服务层实现

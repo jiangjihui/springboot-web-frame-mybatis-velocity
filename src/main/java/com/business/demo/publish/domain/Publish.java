@@ -1,4 +1,4 @@
-package com.business.demo.publish.model;
+package com.business.demo.publish.domain;
 
 import lombok.Data;
 import com.common.model.AuditBaseEntity;

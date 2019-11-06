@@ -1,13 +1,13 @@
 package com.business.demo.publish.controller;
 
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
-import com.business.demo.publish.model.Publish;
+import com.business.demo.publish.domain.Publish;
 import com.business.demo.publish.service.IPublishService;
-import com.common.web.form.PageRequestForm;
 import com.common.web.controller.BaseController;
+import com.common.web.form.PageRequestForm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 通知公告信息操作处理
