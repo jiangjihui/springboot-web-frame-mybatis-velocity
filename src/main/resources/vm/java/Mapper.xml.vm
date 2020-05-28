@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${package}.mapper.${classEntity}Mapper">
+
+    <resultMap type="${classEntity}" id="${classEntity}Result">
+        #foreach ($column in $columnFieldList)
+            <result property="${column.attrName}"    column="${column.columnName}"    />
+        #end
+    </resultMap>
+
+    <sql id="select${classEntity}Vo">
+        select#foreach($column in $columnFieldList) $column.columnName#if($velocityCount != $columnFieldList.size()),#end#end from ${tableName}
+    </sql>
+
+    <select id="select${classEntity}List" parameterType="Map" resultMap="${classEntity}Result">
+        <include refid="select${classEntity}Vo"/>
+        <where>
+            #foreach($column in $columnFieldList)
+                <if test="$column.attrName != null #if($column.attrType == 'String' ) and $column.attrName.trim() != '' #end"> and $column.columnName = #{$column.attrName}</if>
+            #end
+        </where>
+    </select>
+
+    <select id="select${classEntity}ById" parameterType="${primaryKey.attrType}" resultMap="${classEntity}Result">
+        <include refid="select${classEntity}Vo"/>
+        where ${primaryKey.columnName} = #{${primaryKey.attrName}}
+    </select>
+
+    <insert id="insert${classEntity}" parameterType="${classEntity}"#if($primaryKey.extra == 'auto_increment') useGeneratedKeys="true" keyProperty="$primaryKey.attrName"#end>
+        insert into ${tableName}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #foreach($column in $columnFieldList)
+                #if($column.columnName != $primaryKey.columnName || $primaryKey.extra != 'auto_increment')
+                    <if test="$column.attrName != null #if($column.attrType == 'String' ) and $column.attrName != '' #end ">$column.columnName,</if>
+                #end
+            #end
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #foreach($column in $columnFieldList)
+                #if($column.columnName != $primaryKey.columnName || $primaryKey.extra != 'auto_increment')
+                    <if test="$column.attrName != null #if($column.attrType == 'String' ) and $column.attrName != '' #end ">#{$column.attrName},</if>
+                #end
+            #end
+        </trim>
+    </insert>
+
+    <update id="update${classEntity}" parameterType="${classEntity}">
+        update ${tableName}
+        <trim prefix="SET" suffixOverrides=",">
+            #foreach($column in $columnFieldList)
+                #if($column.columnName != $primaryKey.columnName)
+                    <if test="$column.attrName != null #if($column.attrType == 'String' ) and $column.attrName != '' #end ">$column.columnName = #{$column.attrName},</if>
+                #end
+            #end
+        </trim>
+        where ${primaryKey.columnName} = #{${primaryKey.attrName}}
+    </update>
+
+    <delete id="delete${classEntity}ById" parameterType="${primaryKey.attrType}">
+        delete from ${tableName} where ${primaryKey.columnName} = #{${primaryKey.attrName}}
+    </delete>
+
+    <delete id="delete${classEntity}ByIds" parameterType="String">
+        delete from ${tableName} where ${primaryKey.columnName} in
+        <foreach item="${primaryKey.attrName}" collection="array" open="(" separator="," close=")">
+            #{${primaryKey.attrName}}
+        </foreach>
+    </delete>
+
+</mapper>

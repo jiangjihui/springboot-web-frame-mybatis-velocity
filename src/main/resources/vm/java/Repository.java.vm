@@ -1,0 +1,15 @@
+package ${package}.repository;
+
+import ${package}.model.${classEntity};
+import com.jjh.framework.jpa.BaseRepository;
+
+/**
+ * ${tableComment} 数据层
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Repository
+public interface ${ClassName}Repository extends BaseRepository<${classEntity}, String> {
+
+}

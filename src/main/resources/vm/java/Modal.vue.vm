@@ -1,0 +1,132 @@
+#set($JQ="$")
+<template>
+  <a-modal
+    :title="title"
+    :width="800"
+    :visible="visible"
+    :confirmLoading="confirmLoading"
+    @ok="handleOk"
+    @cancel="handleCancel"
+    cancelText="关闭">
+    
+    <a-spin :spinning="confirmLoading">
+      <a-form :form="form">
+
+#foreach($column in $columns)
+    #if($column.fieldName !='id')
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="${column.filedComment}">
+          #if($column.fieldType == 'date')
+          <a-date-picker v-decorator="[ '${column.fieldName}', #if( $column.nullable =='N') validatorRules.${column.fieldName} #else{}#end]" />
+          #elseif($column.fieldType == 'datetime')
+          <a-date-picker showTime format='YYYY-MM-DD HH:mm:ss' v-decorator="[ '${column.fieldName}', #if( $column.nullable =='N') validatorRules.${column.fieldName} #else{}#end]" />
+          #elseif($column.fieldType == 'int' || $column.fieldType == 'decimal' || $column.fieldType == 'double')
+          <a-input-number v-decorator="[ '${column.fieldName}', #if( $column.nullable =='N') validatorRules.${column.fieldName} #else{}#end]" />
+          #else
+          <a-input placeholder="请输入${column.filedComment}" v-decorator="[ '${column.fieldName}', #if( $column.nullable =='N') validatorRules.${column.fieldName} #else{}#end]" />
+          #end
+        </a-form-item>
+    #end
+#end
+
+		
+      </a-form>
+    </a-spin>
+  </a-modal>
+</template>
+
+<script>
+  import pick from 'lodash.pick'
+  import { add${entityName}, edit${entityName} } from '@/api/api'
+
+  export default {
+    name: "${entityName}Modal",
+    data () {
+      return {
+        title:"操作",
+        visible: false,
+        model: {},
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 5 },
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 16 },
+        },
+
+        confirmLoading: false,
+        form: this.${JQ}form.createForm(this),
+        validatorRules:{
+        #foreach($column in $columns)
+            #if($column.fieldName !='id')
+                #if( $column.nullable =='N')
+                    ${column.fieldName}:{rules: [{ required: true, message: '请输入${column.filedComment}!' }]},
+                #end
+            #end
+         #end
+        },
+      }
+    },
+    created () {
+    },
+    methods: {
+      add () {
+        this.edit({});
+      },
+      edit (record) {
+        this.form.resetFields();
+        this.model = Object.assign({}, record);
+        this.visible = true;
+        this.$nextTick(() => {
+          this.form.setFieldsValue(pick(this.model#foreach($column in $columns)#if($column.fieldName !='id'),'${column.fieldName}'#end#end))
+		  //时间格式化
+          #foreach($column in $columns)
+              #if($column.fieldName !='id')
+                this.form.setFieldsValue({${column.fieldName}:this.model.${column.fieldName}?moment(this.model.${column.fieldName}):null})
+              #end
+          #end
+        });
+
+      },
+      close () {
+        this.$emit('close');
+        this.visible = false;
+      },
+      handleOk () {
+        const that = this;
+        // 触发表单验证
+        this.form.validateFields((err, values) => {
+          if (!err) {
+            that.confirmLoading = true;
+            let formData = Object.assign(this.model, values);
+
+              let obj = !this.model.id ? add${entityName}(formData) : edit${entityName}(formData)
+              obj.then(res => {
+              if(res.success){
+                that.${JQ}message.success(res.message);
+                that.${JQ}emit('ok');
+              }else{
+                that.${JQ}message.warning(res.message);
+              }
+            }).finally(() => {
+              that.confirmLoading = false;
+              that.close();
+            })
+          }
+        })
+      },
+      handleCancel () {
+        this.close()
+      },
+
+
+    }
+  }
+</script>
+
+<style lang="less" scoped>
+
+</style>

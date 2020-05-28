@@ -1,69 +1,133 @@
 package ${package}.controller;
 
-import java.util.List;
+
+import ${package}.model.${classEntity};
+import ${package}.service.${ClassName}Service;
+import com.jjh.common.web.controller.BaseController;
+import com.jjh.common.web.form.PageRequestForm;
+import com.jjh.common.web.form.PageResponseForm;
+import com.jjh.common.web.form.SimpleResponseForm;
+import com.jjh.framework.aspect.operationlog.BusinessType;
+import com.jjh.framework.aspect.operationlog.Log;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import ${package}.model.${className};
-import ${package}.service.I${className}Service;
-import com.common.web.form.PageRequestForm;
-import com.common.web.controller.BaseController;
+#if($importAndExport == true)
+import org.springframework.web.multipart.MultipartFile;
+import com.jjh.framework.plugin.excel.ExcelUtil;
+#end
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
- * ${tableComment}信息操作处理
+*   ${tableComment}管理
  *
  * @author ${author}
  * @date ${datetime}
- */
+*/
+@Api(tags = "${tableComment}管理")
 @RestController
 @RequestMapping("/${moduleName}/${classname}")
-public class ${className}Controller extends BaseController {
+public class ${ClassName}Controller extends BaseController {
 
-	@Autowired
-	private I${className}Service ${classname}Service;
+    @Autowired
+    private ${ClassName}Service ${className}Service;
 
 
-	/**
-	 * 查询${tableComment}列表
-	 */
-	@PostMapping("/list")
-	public Object list(@RequestBody PageRequestForm form) {
-		startPage(form);
-        List<${className}> list = ${classname}Service.select${className}List(form.getParams());
-		return page(list);
-	}
+    /**
+     * ${tableComment}列表
+     */
+    @ApiOperation("${tableComment}列表")
+    @ApiOperationSupport(order = 0)
+    @PostMapping("/list")
+    public SimpleResponseForm<PageResponseForm<${classEntity}>> list(@RequestBody PageRequestForm<${classEntity}> form) {
+        List<${classEntity}> list = ${className}Service.list(form);
+        return page(form, list);
+    }
 
-	/**
-	 * 新增保存${tableComment}
-	 */
-	@PostMapping("/add")
-	public Object addSave(${className} ${classname})
-	{
-		return success(${classname}Service.insert${className}(${classname}));
-	}
+    /**
+     * 新增${tableComment}
+     */
+    @Log(title = "新增${tableComment}", businessType = BusinessType.INSERT)
+    @ApiOperation("新增${tableComment}")
+    @ApiOperationSupport(order = 1, ignoreParameters = {"id","createTime","updateTime","createBy","updateBy"})
+    @PostMapping("/add")
+    public SimpleResponseForm<${classEntity}> add(@Valid @RequestBody ${classEntity} entity) {
+        ${classEntity} result = ${className}Service.add(entity);
+        return success();
+    }
 
-	/**
-	 * 查找${tableComment}
-	 */
-	@GetMapping("/find/{${primaryKey.attrname}}")
-	public Object edit(@PathVariable("${primaryKey.attrname}") ${primaryKey.attrType} ${primaryKey.attrname}) {
-        return success(${classname}Service.select${className}ById(${primaryKey.attrname}));
-	}
+    /**
+     * 更新${tableComment}
+     */
+    @Log(title = "更新${tableComment}", businessType = BusinessType.UPDATE)
+    @ApiOperation("更新${tableComment}")
+    @ApiOperationSupport(order = 2, ignoreParameters = {"createTime","updateTime","createBy","updateBy"})
+    @PostMapping("/update")
+    public SimpleResponseForm<${classEntity}> update(@Valid @RequestBody ${classEntity} entity) {
+        ${classEntity} result = ${className}Service.update(entity);
+        return success();
+    }
 
-	/**
-	 * 修改保存${tableComment}
-	 */
-	@PostMapping("/edit")
-	public Object editSave(${className} ${classname}) {
-		return success(${classname}Service.update${className}(${classname}));
-	}
+    /**
+     * 删除${tableComment}
+     */
+    @Log(title = "删除${tableComment}", businessType = BusinessType.DELETE)
+    @ApiOperation("删除${tableComment}")
+    @ApiOperationSupport(order = 3)
+    @GetMapping("/delete")
+    public SimpleResponseForm<String> delete(String ids) {
+        ${className}Service.del(ids);
+        return success();
+    }
 
-	/**
-	 * 删除${tableComment}
-	 */
-	@PostMapping( "/remove")
-	public Object remove(String ids) {
-		return success(${classname}Service.delete${className}ByIds(ids));
-	}
+#if($importAndExport == true)
+    /**
+     * ${tableComment}导入模板
+     * @return
+     */
+    @ApiOperation(value = "${tableComment}导入模板")
+    @ApiOperationSupport(order = 4)
+    @GetMapping("/import_template")
+    public SimpleResponseForm<String> importTemplate() {
+        ExcelUtil<${classEntity}> util = new ExcelUtil<>(${classEntity}.class);
+        return success(util.importTemplateExcel( "${tableComment}导入"));
+    }
 
+    /**
+     * ${tableComment}导入
+     * @return
+     */
+    @Log(title = "${tableComment}导入", businessType = BusinessType.IMPORT)
+    @ApiOperation(value = "${tableComment}导入")
+    @ApiOperationSupport(order = 5)
+    @PostMapping("/import_data")
+    public SimpleResponseForm<String> importData(MultipartFile file, boolean updateSupport) {
+        if (file == null) {
+            return error("请选择文件");
+        }
+        ExcelUtil<${classEntity}> util = new ExcelUtil<>(${classEntity}.class);
+        List<${classEntity}> list = util.importExcel(file);
+        ${className}Service.importData(list, updateSupport);
+        return success();
+    }
+
+    /**
+     * ${tableComment}导出
+     * @param form 分页请求参数
+     * @return 导出文件
+     */
+    @Log(title = "${tableComment}导出", businessType = BusinessType.EXPORT)
+    @ApiOperation("${tableComment}导出")
+    @ApiOperationSupport(order = 6)
+    @PostMapping("/export")
+    public SimpleResponseForm<String> export(@RequestBody PageRequestForm<${classEntity}> form) {
+        List<${classEntity}> list = ${className}Service.list(form);
+        ExcelUtil<${classEntity}> excelUtil = new ExcelUtil<>(${classEntity}.class);
+        return success(excelUtil.exportExcel(list, "${tableComment}列表"));
+    }
+#end
 }

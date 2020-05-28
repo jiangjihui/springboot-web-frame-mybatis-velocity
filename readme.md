@@ -1,10 +1,15 @@
-# Web应用框架 - SpringBoot MyBatis  
+# Web应用框架 - SpringBoot Mybatis  
 
 当前版本:1.0.0  
 
+## 系统描述  
+
+业务系统基础框架
+
+
 ## 项目简介  
 
-基于springboot的web应用框架，使用MyBatis作为数据持久层，利用velocity生成controller/service/dao/mapper.xml文件，简化开发效率
+使用Mybatis作为数据持久层，Mybatis-Plus来增强mybatis功能，使用shiro作为安全框架，执行身份验证、授权、密码和会话管理。
 
 
 ## 技术选型  
@@ -20,14 +25,13 @@
 | Spring Framework | 容器 | [http://projects.spring.io/spring-framework](http://projects.spring.io/spring-framework/) |
 | Spring Boot | 整合框架 | [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot) |
 | Spring MVC | MVC框架 | [https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html](https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html) |
-| MyBatis | 持久层 | [https://blog.mybatis.org/](https://blog.mybatis.org/) |
 | Logback | 日志组件 | [https://logback.qos.ch](https://logback.qos.ch) |
 | Maven | 项目构建 | [http://maven.apache.org](http://maven.apache.org/) |
 | Druid | 数据库连接池 | [https://github.com/alibaba/druid/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98](https://github.com/alibaba/druid/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98) |
 | Hutool | 工具类 | [http://hutool.mydoc.io](http://hutool.mydoc.io) |
 | Redis | 分布式缓存数据库 | [https://redis.io](https://redis.io) |
 | MySQL | 关系数据库 | [https://www.mysql.com](https://www.mysql.com) |
-| Velocity | 模板引擎 | [http://velocity.apache.org/](http://velocity.apache.org/) |
+| Shiro | 安全框架 | [http://shiro.apache.org/](http://shiro.apache.org/) |
   
   
 ## 第三方平台  
@@ -58,12 +62,15 @@
 mvn package -DskipTests
 ```
 
-即可将项目打包成可部署到tomcat下的war文件，将war文件拷贝到tomcat下的webapps目录中，在tomcat下的bin目录中运行./startup.sh启动tomcat即可
+即可将项目打包成jar文件，使用如下命令即可运行程序：  
+```  
+java -jar app.jar --spring.profiles.active=test  
+```  
 
   
 ## 系统结构  
 
-基于技术分包，早年的Java分包方式通常是基于技术的，比如与domain包平级的有controller包、service包和mapper包等。
+基于业务分包，早年的Java分包方式通常是基于技术的，比如与domain包平级的有controller包、service包和mapper包等。
 
 ## 文件说明  
 
@@ -84,12 +91,13 @@ mvn package -DskipTests
 
 ## 资料文档  
 
+* 参考系统1： https://gitee.com/jeecg/jeecg-boot
+* 参考系统2： http://doc.ruoyi.vip/
+* 接口文档： http://localhost:8084/doc.html
+
+* 设计图： https://beta.lanhuapp.com/web/#/item/project/board?pid=59f9def2-9bf3-4153-a463-341a66e9f1d4  
+
 
 ## FAQ  
 
-开发过程中常见问题的解答  
-
-
-## 引用  
-
-本项目部分功能参考ruoyi的设计，特此鸣谢 http://www.ruoyi.vip/index
+开发过程中常见问题的解答

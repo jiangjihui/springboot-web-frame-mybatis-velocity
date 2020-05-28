@@ -1,46 +1,27 @@
-package ${package}.domain;
+package ${package}.model;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
-import com.common.model.AuditBaseEntity;
-#foreach ($column in $columns)
-#if($column.attrType == 'Date' && ($column.attrname != 'createBy' && $column.attrname != 'createTime' && $column.attrname != 'updateBy' && $column.attrname != 'updateTime' && $column.attrname != 'remark'))
-import java.util.Date;
-#break
-#end
-#end
+
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import static ${package}.model.${classEntity}.TABLE_NAME;
 
 /**
- * ${tableComment}表 ${tableName}
- * 
+ * ${tableComment}信息
+ *
  * @author ${author}
  * @date ${datetime}
  */
+@ApiModel("${tableComment}信息")
 @Data
-public class ${className} extends AuditBaseEntity
-{
-	private static final long serialVersionUID = 1L;
-	
-#foreach ($column in $columns)
-#if($column.attrname != 'id' && $column.attrname != 'createBy' && $column.attrname != 'createTime' && $column.attrname != 'updateBy' && $column.attrname != 'updateTime' )
-	/** $column.columnComment */
-	private $column.attrType $column.attrname;
-#end
-#end
-#*
+@Entity
+@Table(name = TABLE_NAME)
+public class ${classEntity} extends AuditBaseEntity {
 
-#foreach ($column in $columns)
-#if($column.attrname != 'id' && $column.attrname != 'createBy' && $column.attrname != 'createTime' && $column.attrname != 'updateBy' && $column.attrname != 'updateTime')
-	public void set${column.attrName}($column.attrType $column.attrname)
-	{
-		this.$column.attrname = $column.attrname;
-	}
+    public static final String TABLE_NAME = TABLE_PREFIX+"${classname}";
 
-	public $column.attrType get${column.attrName}()
-	{
-		return $column.attrname;
-	}
-#end
-#end
-*#
 
 }
