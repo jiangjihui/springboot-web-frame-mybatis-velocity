@@ -79,7 +79,7 @@ public class SwaggerConfig {
                 .apis(
                         // 使用swagger 多包扫描：https://blog.csdn.net/Melody_Susan/article/details/80339542
                         Predicates.or(
-                                RequestHandlerSelectors.basePackage("com.jjh.business")
+                                RequestHandlerSelectors.basePackage("com.jjh.business.demo")
                                 ))
                 // 扫描指定包中的swagger注解
                 //.apis(RequestHandlerSelectors.basePackage("com.ruoyi.project.tool.swagger"))

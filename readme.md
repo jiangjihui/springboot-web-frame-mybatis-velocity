@@ -93,9 +93,13 @@ java -jar app.jar --spring.profiles.active=test
 
 * 参考系统1： https://gitee.com/jeecg/jeecg-boot
 * 参考系统2： http://doc.ruoyi.vip/
-* 接口文档： http://localhost:8084/doc.html
+* 接口文档： http://localhost:18080/api/doc.html
 
-* 设计图： https://beta.lanhuapp.com/web/#/item/project/board?pid=59f9def2-9bf3-4153-a463-341a66e9f1d4  
+
+## 开始使用  
+
+导入项目目录下的文件\resources\scripts\db\dump.sql到数据库中，修改application-dev.properties配置文件，指向新的数据库地址。  
+
 
 
 ## FAQ  
