@@ -1,5 +1,6 @@
 package com.jjh.common.web.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageInfo;
 import com.jjh.common.web.form.PageRequestForm;
 import com.jjh.common.web.form.PageResponseForm;
@@ -72,4 +73,11 @@ public class BaseController {
         return new SimpleResponseForm<PageResponseForm<T>>(form);
     }
 
+    /**
+     * 页面跳转
+     */
+    public static String redirect(String url)
+    {
+        return StrUtil.format("redirect:{}", url);
+    }
 }

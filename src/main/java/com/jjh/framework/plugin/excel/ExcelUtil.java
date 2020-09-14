@@ -217,6 +217,9 @@ public class ExcelUtil<T>
                 T entity = null;
                 for (Map.Entry<Integer, Field> entry : fieldsMap.entrySet())
                 {
+                    if (entry.getKey() == null) {
+                        throw new Exception("字段异常，请检查导入类字段是否与excel数据字段匹配");
+                    }
                     Object val = this.getCellValue(row, entry.getKey());
 
                     // 如果不存在实例则新建.

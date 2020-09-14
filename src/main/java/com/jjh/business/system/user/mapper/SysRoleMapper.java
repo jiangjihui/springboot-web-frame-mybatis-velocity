@@ -14,9 +14,28 @@ import java.util.List;
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
     /**
-     *  获取角色Code
-     * @param id    用户ID
+     *  获取角色信息
+     * @param userId    用户ID
      */
-    List<String> listSysRoleCode(String id);
+    List<SysRole> listSysRole(String userId);
+
+    /**
+     *  获取角色信息
+     * @param userId    用户ID
+     */
+    Integer hasRole(String userId, String name);
+
+    /**
+     *  获取角色Code
+     * @param userId    用户ID
+     */
+    List<String> listSysRoleCode(String userId);
+
+    /**
+     *  获取角色Code
+     * @param userId    用户ID
+     * @param status    角色状态
+     */
+    List<String> listSysRoleCodeByStatus(String userId, Integer status);
 
 }

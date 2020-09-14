@@ -70,12 +70,13 @@ public class SysUserServiceImpl implements SysUserService {
             queryWrapper.ge(filter.getCreateTime_WithGreatEqual() != null, "create_time", filter.getCreateTime_WithGreatEqual());
             queryWrapper.le(filter.getCreateTime_WithLessEqual() != null, "create_time", filter.getCreateTime_WithLessEqual());
         }
-
+        form.pageWrapper();
         List<SysUser> list = sysUserMapper.selectList(queryWrapper);
         if (CollectionUtil.isNotEmpty(list)) {
             for (SysUser user : list) {
                 // 回显角色
                 user.setRoleCode(sysRoleMapper.listSysRoleCode(user.getId()));
+                user.setRoleList(sysRoleMapper.listSysRole(user.getId()));
             }
         }
         return list;
@@ -190,14 +191,13 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    @CacheEvict(value = {CacheConstants.SYS_USER_NAME}, allEntries = true)
+    @CacheEvict(value = {CacheConstants.SYS_USER_NAME, CacheConstants.SYS_USER_ID}, allEntries = true)
     public void delete(@NotNull String ids) {
         // 删除角色关联
         String[] idArray = ids.split(",");
         for (String userId : idArray) {
             sysUserRoleMappingMapper.delete(Wrappers.<SysUserRoleMapping>lambdaQuery().eq(SysUserRoleMapping::getUserId, userId));
         }
-
         sysUserMapper.deleteBatchIds(CollectionUtil.toList(idArray));
     }
 
@@ -232,7 +232,7 @@ public class SysUserServiceImpl implements SysUserService {
         if (BaseConstants.SYS_ADMIN.equals(sysUser.getUsername())) {
             return CollectionUtil.toList(new String[]{"admin"});
         }
-        return sysRoleMapper.listSysRoleCode(userId);
+        return sysRoleMapper.listSysRoleCodeByStatus(userId, BaseConstants.STATUS_NOMAL);
     }
 
     /**
@@ -334,6 +334,7 @@ public class SysUserServiceImpl implements SysUserService {
      * @param form 密码表单
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public SysUser resetCurrentUserPwd(ResetCurrentUserPwdForm form) {
         String userId = JwtUtil.getUserId();

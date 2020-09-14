@@ -1,5 +1,6 @@
 package com.jjh.framework.plugin.excel;
 
+import cn.hutool.core.date.DateUtil;
 import com.jjh.common.exception.BusinessException;
 import com.jjh.common.util.TimeUtils;
 import com.jjh.framework.properties.FileProperties;
@@ -136,9 +137,12 @@ public class ExcelTool
     /**
      * 编码文件名
      */
-    public String encodingFilename(String filename)
+    public static String encodingFilename(String filename)
     {
-        filename = filename +  "_" + TimeUtils.getDateTimeFileName() + ".xlsx";
+        // 文件路径按日期归类
+        String dateDir = "excel"+ File.separator
+                +DateUtil.thisYear() + File.separator + DateUtil.thisMonth() + File.separator + DateUtil.thisDayOfMonth()+ File.separator ;
+        filename = dateDir + filename +  "_" + TimeUtils.getDateTimeFileName() + ".xlsx";
         return filename;
     }
 
@@ -147,7 +151,7 @@ public class ExcelTool
      *
      * @param filename 文件名称
      */
-    public String getAbsoluteFile(String filename)
+    public static String getAbsoluteFile(String filename)
     {
         String downloadPath = FileProperties.getResourcePath() + File.separator + filename;
         File desc = new File(downloadPath);
@@ -269,6 +273,18 @@ public class ExcelTool
                 }
             }
         }
+    }
+
+    /**
+     * 初始化excel表单
+     *
+     * @author jjh
+     * @return 结果
+     */
+    public void initExcel(String sheetName)
+    {
+        this.sheetName = sheetName;
+        createWorkbook();
     }
 
     /**

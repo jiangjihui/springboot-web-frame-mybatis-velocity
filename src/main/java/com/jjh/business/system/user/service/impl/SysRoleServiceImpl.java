@@ -9,6 +9,7 @@ import com.jjh.business.system.user.controller.form.UpdateUserRoleForm;
 import com.jjh.business.system.user.mapper.RolePermissionMappingMapper;
 import com.jjh.business.system.user.mapper.SysRoleMapper;
 import com.jjh.business.system.user.mapper.SysUserRoleMappingMapper;
+import com.jjh.business.system.user.model.RolePermissionMapping;
 import com.jjh.business.system.user.model.SysRole;
 import com.jjh.business.system.user.model.SysUserRoleMapping;
 import com.jjh.business.system.user.service.SysRoleService;
@@ -112,10 +113,9 @@ public class SysRoleServiceImpl implements SysRoleService {
         for (String roleId : idArray) {
             // 删除用户关联
             HashMap<String, Object> params = new HashMap<>();
-            params.put("roleId", roleId);
-            sysUserRoleMappingMapper.deleteByMap(params);
+            sysUserRoleMappingMapper.delete(Wrappers.<SysUserRoleMapping>lambdaQuery().eq(SysUserRoleMapping::getRoleId, roleId));
             //删除权限关联
-            rolePermissionMappingMapper.deleteByMap(params);
+            rolePermissionMappingMapper.delete(Wrappers.<RolePermissionMapping>lambdaQuery().eq(RolePermissionMapping::getRoleId, roleId));
         }
 
         sysRoleMapper.deleteBatchIds(CollectionUtil.toList(idArray));
