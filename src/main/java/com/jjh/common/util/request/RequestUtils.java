@@ -1,5 +1,6 @@
 package com.jjh.common.util.request;
 
+import cn.hutool.core.util.StrUtil;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -32,7 +33,12 @@ public class RequestUtils {
     public static String currentRequestIP() {
         HttpServletRequest request = getRequest();
         if (request != null) {
-            return request.getRemoteAddr();
+            // 配合nginx配置使用：proxy_set_header  x-client-ip  $remote_addr;
+            String ip = request.getHeader("x-client-ip");
+            if (StrUtil.isBlank(ip)) {
+                return request.getRemoteAddr();
+            }
+            return ip;
         }
         return null;
     }
