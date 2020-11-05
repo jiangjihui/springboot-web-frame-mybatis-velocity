@@ -1,7 +1,5 @@
 package com.jjh.framework.config;
 
-import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
-import com.google.common.base.Predicates;
 import com.jjh.framework.jwt.JWTConstants;
 import com.jjh.framework.properties.ApplicationInfoProperties;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +13,7 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 import java.util.Collections;
 
@@ -26,8 +24,7 @@ import java.util.Collections;
  * @date 2019/10/30
  **/
 @Configuration
-@EnableSwagger2
-@EnableKnife4j
+@EnableSwagger2WebMvc
 public class SwaggerConfig {
 
     /**
@@ -47,15 +44,12 @@ public class SwaggerConfig {
                 // 扫描所有有注解的api，用这种方式更灵活
 //                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 .apis(
-                        // 使用swagger 多包扫描：https://blog.csdn.net/Melody_Susan/article/details/80339542
-                        Predicates.or(
-                                RequestHandlerSelectors.basePackage("com.jjh.business.system"),
-                                RequestHandlerSelectors.basePackage("com.jjh.business.common")
-                                ))
+                        RequestHandlerSelectors.basePackage("com.jjh.business.system")
+                        .or(RequestHandlerSelectors.basePackage("com.jjh.business.common"))
                 // 扫描指定包中的swagger注解
                 //.apis(RequestHandlerSelectors.basePackage("com.ruoyi.project.tool.swagger"))
                 // 扫描所有 .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
+                ).paths(PathSelectors.any())
                 .build()
                 .securitySchemes(Collections.singletonList(securityScheme()));
     }
@@ -77,14 +71,11 @@ public class SwaggerConfig {
                 // 扫描所有有注解的api，用这种方式更灵活
 //                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 .apis(
-                        // 使用swagger 多包扫描：https://blog.csdn.net/Melody_Susan/article/details/80339542
-                        Predicates.or(
-                                RequestHandlerSelectors.basePackage("com.jjh.business.demo")
-                                ))
+                        RequestHandlerSelectors.basePackage("com.jjh.business.demo")
                 // 扫描指定包中的swagger注解
                 //.apis(RequestHandlerSelectors.basePackage("com.ruoyi.project.tool.swagger"))
                 // 扫描所有 .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
+                ).paths(PathSelectors.any())
                 .build()
                 .securitySchemes(Collections.singletonList(securityScheme()));
     }
