@@ -1,6 +1,7 @@
 package com.jjh.business.demo.article.controller;
 
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.jjh.business.demo.article.model.Article;
 import com.jjh.business.demo.article.service.ArticleService;
 import com.jjh.common.web.controller.BaseController;
@@ -10,6 +11,8 @@ import com.jjh.common.web.form.SimpleResponseForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -70,4 +73,31 @@ public class ArticleController extends BaseController {
         return success();
     }
 
+
+    /**
+     * msg
+     */
+    @ApiOperation("msg")
+    @GetMapping("/msg")
+    public SimpleResponseForm<String> msg() {
+//        LocaleContextHolder.setLocale(Locale.US);
+        return success(message("sys.login.accountFreezed"));
+    }
+
+
+    /**
+     * 根据消息键和参数 获取消息 委托给Spring messageSource
+     *
+     * @param code 消息键
+     * @param args 参数
+     * @return 获取国际化翻译值
+     */
+    public static String message(String code, Object... args){
+        MessageSource messageSource = SpringUtil.getBean(MessageSource.class);
+        try{
+            return messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
+        }catch (Exception e){
+            return code;
+        }
+    }
 }
