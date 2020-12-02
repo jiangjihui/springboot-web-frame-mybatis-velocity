@@ -8,7 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>springboot-web-frame-mybatis-velocity</name>
+    <name>springboot-web-frame-captcha</name>
     <description>Demo project for Spring Boot</description>
 
     <parent>
@@ -166,6 +166,13 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <!--行为验证码 https://github.com/anji-plus/captcha-->
+        <dependency>
+            <groupId>com.github.anji-plus</groupId>
+            <artifactId>captcha-spring-boot-starter</artifactId>
+            <version>1.2.4</version>
         </dependency>
 
     </dependencies>
