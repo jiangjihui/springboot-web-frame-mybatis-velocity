@@ -121,10 +121,26 @@ public class FileInfoServiceImpl implements FileInfoService {
         String realFileName = fileName;
         // 下载的文件路径
         String filePath = FileProperties.getResourcePath() + File.separator + fileName;
+        writeFile(filePath, delete, response, request);
+    }
+
+    /**
+     * 写入文件到响应流
+     * @param filePath 文件路径
+     * @param delete 是否删除
+     * @param response 响应
+     * @param request 请求
+     */
+    @Override
+    public void writeFile(String filePath, Boolean delete, HttpServletResponse response, HttpServletRequest request) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            throw new BusinessException("文件不存在，请检查");
+        }
         response.setCharacterEncoding("utf-8");
         response.setContentType("multipart/dto-data");
         response.setHeader("Content-Disposition",
-                "attachment;fileName=" + setFileDownloadHeader(request, realFileName));
+                "attachment;fileName=" + setFileDownloadHeader(request, file.getName()));
         try {
             writeBytes(filePath, response.getOutputStream());
         } catch (IOException e) {

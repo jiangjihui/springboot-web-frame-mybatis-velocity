@@ -115,6 +115,6 @@ if(code===0){
     //获取token
     var token=ke.response.data.result.token;
     //1、如何参数是Header，则设置当前逻辑分组下的全局Header
-    ke.global.setHeader("X-Access-Token",token);
+    ke.global.setAllHeader("X-Access-Token",token);
 }
 ```  
