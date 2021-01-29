@@ -20,10 +20,10 @@ import javax.validation.constraints.NotBlank;
 public class GenTargetPathForm {
 
     /**
-     * 指定的目录（包含到model包名）
+     * 代码绝对路径（包含到model包名）
      */
-    @NotBlank(message = "目录不能为空")
-    @ApiModelProperty(value = "指定的目录（包含到model包名）", example = "D:\\Temp\\IDEA\\ecom_analysis_backend\\src\\main\\java\\com\\jjh\\business\\system\\support\\model")
+    @NotBlank(message = "代码绝对路径")
+    @ApiModelProperty(value = "代码绝对路径（包含到model包名）", example = "D:\\Temp\\IDEA\\ecom_analysis_backend\\src\\main\\java\\com\\jjh\\business\\system\\support\\model")
     private String packagePath;
 
     /** 作者（比如：jjh）*/
@@ -31,8 +31,8 @@ public class GenTargetPathForm {
     @ApiModelProperty("作者")
     private String author;
 
-    /** 需要生成的目标文件类型*/
-    @ApiModelProperty(value = "需要生成的目标文件类型（为空时默认生成全部目标文件类型）", example = "Service,Controller")
+    /** 目标文件类型*/
+    @ApiModelProperty(value = "目标文件类型（,号分隔；为空时默认生成全部目标文件类型）", example = "Service,Controller")
     private String targetFile;
 
     /** 包含项*/
