@@ -119,6 +119,9 @@ public class FileInfoServiceImpl implements FileInfoService {
     @Override
     public void downloadFile(String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request) {
         String realFileName = fileName;
+        if (!checkAllowDownload(realFileName)) {
+            throw new BusinessException(StrUtil.format("文件名称 {} 非法，禁止下载，请检查", realFileName));
+        }
         // 下载的文件路径
         String filePath = FileProperties.getResourcePath() + File.separator + fileName;
         writeFile(filePath, delete, response, request);
@@ -150,6 +153,19 @@ public class FileInfoServiceImpl implements FileInfoService {
         if (Boolean.TRUE.equals(delete)){
             FileUtil.del(filePath);
         }
+    }
+
+    /**
+     * 校验文件是否可下载
+     * @param fileName
+     * @return
+     */
+    public static boolean checkAllowDownload(String fileName) {
+        // 禁止目录上跳级别
+        if (StrUtil.contains(fileName, "..")) {
+            return false;
+        }
+        return true;
     }
 
     /**
