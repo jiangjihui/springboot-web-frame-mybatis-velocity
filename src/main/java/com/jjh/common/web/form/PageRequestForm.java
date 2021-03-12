@@ -4,9 +4,10 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.jjh.framework.jpa.SpecificSuffix;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.pagehelper.PageHelper;
+import com.jjh.common.web.query.QuerySupport;
+import com.jjh.framework.jpa.SpecificSuffix;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -191,5 +192,17 @@ public class PageRequestForm<T> {
     public Wrapper pageWrapperWithSort(QueryWrapper wrapper){
         PageHelper.startPage(pageNum, pageSize);
         return sortQueryWrapper(wrapper);
+    }
+
+    /**
+     * 处理@QueryCondition注解查询
+     * @return
+     */
+    public Wrapper pageWrapperQuerySupport(){
+        PageHelper.startPage(pageNum, pageSize);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 处理注解查询
+        QuerySupport.queryWrapper(filter, queryWrapper);
+        return queryWrapper;
     }
 }

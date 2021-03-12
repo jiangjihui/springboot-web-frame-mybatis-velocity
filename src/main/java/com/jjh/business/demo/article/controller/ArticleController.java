@@ -2,6 +2,7 @@ package com.jjh.business.demo.article.controller;
 
 
 import cn.hutool.extra.spring.SpringUtil;
+import com.jjh.business.demo.article.controller.form.ArticleQueryListForm;
 import com.jjh.business.demo.article.model.Article;
 import com.jjh.business.demo.article.service.ArticleService;
 import com.jjh.common.web.controller.BaseController;
@@ -38,7 +39,7 @@ public class ArticleController extends BaseController {
      */
     @ApiOperation("文章列表")
     @PostMapping("/list")
-    public SimpleResponseForm<PageResponseForm<Article>> list(@RequestBody PageRequestForm<Article> form) {
+    public SimpleResponseForm<PageResponseForm<Article>> list(@RequestBody PageRequestForm<ArticleQueryListForm> form) {
         List<Article> list = articleService.list(form);
         return page(form, list);
     }
