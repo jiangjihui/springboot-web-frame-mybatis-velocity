@@ -26,7 +26,7 @@ public class AuditorMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        this.strictUpdateFill(metaObject, "updateTime", Date.class, TimeUtils.nowDate());
-        this.strictUpdateFill(metaObject, "updateBy", String.class, JwtUtil.getUserId());
+        this.setFieldValByName("updateTime", TimeUtils.nowDate(), metaObject);
+        this.setFieldValByName("updateBy", JwtUtil.getUserId(), metaObject);
     }
 }
