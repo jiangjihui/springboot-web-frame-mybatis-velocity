@@ -1,11 +1,13 @@
 package com.jjh.common.web.form;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.jjh.framework.jpa.SpecificSuffix;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.pagehelper.PageHelper;
+import com.jjh.common.web.query.QuerySupport;
+import com.jjh.framework.jpa.SpecificSuffix;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,7 +22,7 @@ import java.util.Map;
 public class PageRequestForm<T> {
 
     /** 页码（从0开始） */
-    @ApiModelProperty(value = "页码", required = true)
+    @ApiModelProperty(value = "页码", example = "1", required = true)
     private Integer pageNum;
 
     /** 每页大小 */
@@ -51,6 +53,30 @@ public class PageRequestForm<T> {
     public QueryWrapper queryWrapper(){
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.setEntity(filter);
+        sortQueryWrapper(queryWrapper);
+        return queryWrapper;
+    }
+
+    /**
+     * 排序包装
+     * @return
+     */
+    public QueryWrapper sortQueryWrapper(QueryWrapper queryWrapper){
+        if (sort != null && !sort.isEmpty()) {
+            for (Map.Entry<String, String> sortEntity : sort.entrySet()) {
+                String columnName = sortEntity.getKey();
+                if (StrUtil.isBlank(columnName)) {
+                    continue;
+                }
+                String direction = sortEntity.getValue().trim();
+                if ("desc".equals(direction) || "-1".equals(direction)) {
+                    queryWrapper.orderByDesc(columnName);
+                }
+                else {
+                    queryWrapper.orderByAsc(columnName);
+                }
+            }
+        }
         return queryWrapper;
     }
 
@@ -60,30 +86,30 @@ public class PageRequestForm<T> {
      * @return
      */
     public QueryWrapper pageQueryWrapper(Class clazz){
-        PageHelper.startPage(pageNum + 1, pageSize);
+        PageHelper.startPage(pageNum, pageSize);
 
         if (clazz == null || filter == null) {
             return this.queryWrapper();
         }
-        QueryWrapper queryWrapper = new QueryWrapper();
-        // 查询类映射
-        queryWrapper.setEntity(BeanUtil.copyProperties(filter, clazz));
         // 自定义前缀查询包装
-        specificSuffixQueryWrapper(queryWrapper);
-
-        return queryWrapper;
+        QueryWrapper queryWrapper = specificSuffixQueryWrapper(filter, clazz);
+        return sortQueryWrapper(queryWrapper);
     }
 
     /**
      * 自定义前缀查询包装
-     * @param queryWrapper
+     * @param filterObject  条件类
+     * @param clazz  映射类类型
      */
-    private void specificSuffixQueryWrapper(QueryWrapper queryWrapper) {
+    public static QueryWrapper specificSuffixQueryWrapper(Object filterObject, Class clazz) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 查询类映射
+        queryWrapper.setEntity(BeanUtil.copyProperties(filterObject, clazz));
         // 自定义查询字段处理
         String paramKey = null;
-        Map<String, Object> paramMap = BeanUtil.beanToMap(filter);
+        Map<String, Object> paramMap = BeanUtil.beanToMap(filterObject);
         if (paramMap == null) {
-            return;
+            return null;
         }
         for (Map.Entry<String, Object> entry : paramMap.entrySet()) {
             // 表达式判断
@@ -92,33 +118,45 @@ public class PageRequestForm<T> {
                 if (entryValue == null){
                     continue;
                 }
+                if (entryValue instanceof String) {
+                    if (StrUtil.isBlank((String) entryValue)) {
+                        continue;
+                    }
+                }
 
                 if (entry.getKey().endsWith(SpecificSuffix.LIKE)) {
                     paramKey = entry.getKey().replace(SpecificSuffix.LIKE, "");
+                    paramKey = StrUtil.toUnderlineCase(paramKey);
                     queryWrapper.likeRight(paramKey, entryValue);
                 }
                 else if (entry.getKey().endsWith(SpecificSuffix.LIKE_ALL)) {
                     paramKey = entry.getKey().replace(SpecificSuffix.LIKE_ALL, "");
+                    paramKey = StrUtil.toUnderlineCase(paramKey);
                     queryWrapper.like(paramKey, entryValue);
                 }
                 else if (entry.getKey().endsWith(SpecificSuffix.IS_NULL)) {
                     paramKey = entry.getKey().replace(SpecificSuffix.IS_NULL, "");
+                    paramKey = StrUtil.toUnderlineCase(paramKey);
                     queryWrapper.isNull(paramKey);
                 }
                 else if (entry.getKey().endsWith(SpecificSuffix.IN)) {
                     paramKey = entry.getKey().replace(SpecificSuffix.IN, "");
+                    paramKey = StrUtil.toUnderlineCase(paramKey);
                     queryWrapper.in(paramKey, entryValue);
                 }
                 else if (entry.getKey().endsWith(SpecificSuffix.GREAT_EQUAL)) {
                     paramKey = entry.getKey().replace(SpecificSuffix.GREAT_EQUAL, "");
+                    paramKey = StrUtil.toUnderlineCase(paramKey);
                     queryWrapper.ge(paramKey, entryValue);
                 }
                 else if (entry.getKey().endsWith(SpecificSuffix.LESS_EQUAL)) {
                     paramKey = entry.getKey().replace(SpecificSuffix.LESS_EQUAL, "");
+                    paramKey = StrUtil.toUnderlineCase(paramKey);
                     queryWrapper.le(paramKey, entryValue);
                 }
             }
         }
+        return queryWrapper;
     }
 
     /**
@@ -143,7 +181,28 @@ public class PageRequestForm<T> {
      * @return
      */
     public Wrapper pageWrapper(Wrapper wrapper){
-        PageHelper.startPage(pageNum + 1, pageSize);
+        PageHelper.startPage(pageNum, pageSize);
         return wrapper;
+    }
+
+    /**
+     * 查询条件封装
+     * @return
+     */
+    public Wrapper pageWrapperWithSort(QueryWrapper wrapper){
+        PageHelper.startPage(pageNum, pageSize);
+        return sortQueryWrapper(wrapper);
+    }
+
+    /**
+     * 处理@QueryCondition注解查询
+     * @return
+     */
+    public Wrapper pageWrapperQuerySupport(){
+        PageHelper.startPage(pageNum, pageSize);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 处理注解查询
+        QuerySupport.queryWrapper(filter, queryWrapper);
+        return queryWrapper;
     }
 }

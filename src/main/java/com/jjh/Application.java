@@ -9,6 +9,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -18,6 +19,7 @@ import java.net.UnknownHostException;
 @MapperScan("com.jjh.business.*.*.mapper")
 @Slf4j
 @EnableScheduling
+@EnableTransactionManagement
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class Application {
 

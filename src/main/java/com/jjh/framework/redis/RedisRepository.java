@@ -18,6 +18,29 @@ public class RedisRepository {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+
+    /* 队列操作 */
+    /**
+     * 入队
+     * @param key   键
+     * @param val   值
+     * @return
+     * @throws Exception
+     */
+    public Long lpush(String key, Object val) {
+        return redisTemplate.opsForList().leftPush(key, val);
+    }
+
+    /**
+     * 出队
+     * @param key   键
+     * @return
+     * @throws Exception
+     */
+    public Object rpop(String key)  {
+        return redisTemplate.opsForList().rightPop(key);
+    }
+
     /**
      * 存入对象到redis
      * @param key   索引
@@ -25,6 +48,23 @@ public class RedisRepository {
      */
     public void set(String key, Object value) {
         redisTemplate.opsForValue().set(key, value);
+    }
+
+    /**
+     * 删除对象
+     * @param key   索引
+     */
+    public void delete(String key) {
+        redisTemplate.delete(key);
+    }
+
+    /**
+     * 删除对象
+     * @param prefix   前缀
+     * @param key   索引
+     */
+    public void delete(String prefix, String key) {
+        this.delete(prefix +":"+ key);
     }
 
     /**

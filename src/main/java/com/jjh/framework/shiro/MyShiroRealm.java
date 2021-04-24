@@ -108,6 +108,16 @@ public class MyShiroRealm extends AuthorizingRealm {
      */
     public AuthenticationInfo jwtAuth(AuthenticationToken authenticationToken) {
         String token = (String) authenticationToken.getCredentials();
+        SysUser sysUser = this.tokenAuth(token);
+        return new SimpleAuthenticationInfo(sysUser, token, "MyRealm");
+    }
+
+    /**
+     * token 校验
+     * @param token
+     * @return
+     */
+    public SysUser tokenAuth(String token) {
         if (StrUtil.isBlank(token)) {
             throw new AuthenticationException("请求异常，缺少token");
         }
@@ -121,13 +131,13 @@ public class MyShiroRealm extends AuthorizingRealm {
         }
         if (BaseConstants.STATUS_BLOCKED == sysUser.getStatus()) {
             logger.info("{}用户已被锁定", sysUser.getUsername());
-            throw new AuthenticationException("用户已被锁定，请联系管理员");
+            throw new AuthenticationException("用户已被禁用，请联系管理员");
         }
 
         if (!this.jwtTokenVerifyAndRefresh(token, username, sysUser.getPassword(), sysUser.getId())) {
             throw new AuthenticationException("token认证失败！");
         }
-        return new SimpleAuthenticationInfo(sysUser, token, "MyRealm");
+        return sysUser;
     }
 
     /**

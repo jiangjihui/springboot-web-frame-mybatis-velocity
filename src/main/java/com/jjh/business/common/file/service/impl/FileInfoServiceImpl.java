@@ -119,12 +119,31 @@ public class FileInfoServiceImpl implements FileInfoService {
     @Override
     public void downloadFile(String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request) {
         String realFileName = fileName;
+        if (!checkAllowDownload(realFileName)) {
+            throw new BusinessException(StrUtil.format("文件名称 {} 非法，禁止下载，请检查", realFileName));
+        }
         // 下载的文件路径
         String filePath = FileProperties.getResourcePath() + File.separator + fileName;
+        writeFile(filePath, delete, response, request);
+    }
+
+    /**
+     * 写入文件到响应流
+     * @param filePath 文件路径
+     * @param delete 是否删除
+     * @param response 响应
+     * @param request 请求
+     */
+    @Override
+    public void writeFile(String filePath, Boolean delete, HttpServletResponse response, HttpServletRequest request) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            throw new BusinessException("文件不存在，请检查");
+        }
         response.setCharacterEncoding("utf-8");
         response.setContentType("multipart/dto-data");
         response.setHeader("Content-Disposition",
-                "attachment;fileName=" + setFileDownloadHeader(request, realFileName));
+                "attachment;fileName=" + setFileDownloadHeader(request, file.getName()));
         try {
             writeBytes(filePath, response.getOutputStream());
         } catch (IOException e) {
@@ -134,6 +153,19 @@ public class FileInfoServiceImpl implements FileInfoService {
         if (Boolean.TRUE.equals(delete)){
             FileUtil.del(filePath);
         }
+    }
+
+    /**
+     * 校验文件是否可下载
+     * @param fileName
+     * @return
+     */
+    public static boolean checkAllowDownload(String fileName) {
+        // 禁止目录上跳级别
+        if (StrUtil.contains(fileName, "..")) {
+            return false;
+        }
+        return true;
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.jjh.business.demo.article.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.jjh.business.demo.article.controller.form.ArticleQueryListForm;
 import com.jjh.business.demo.article.mapper.ArticleMapper;
 import com.jjh.business.demo.article.model.Article;
 import com.jjh.business.demo.article.service.ArticleService;
@@ -34,8 +35,8 @@ public class ArticleServiceImpl implements ArticleService {
      * @return 文章集合
      */
     @Override
-    public List<Article> list(PageRequestForm<Article> form) {
-        return articleMapper.selectList(form.pageWrapper());
+    public List<Article> list(PageRequestForm<ArticleQueryListForm> form) {
+        return articleMapper.selectList(form.pageWrapperQuerySupport());
     }
 
     /**

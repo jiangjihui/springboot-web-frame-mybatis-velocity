@@ -1,5 +1,6 @@
 package com.jjh.business.demo.article.service;
 
+import com.jjh.business.demo.article.controller.form.ArticleQueryListForm;
 import com.jjh.business.demo.article.model.Article;
 import com.jjh.common.web.form.PageRequestForm;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,7 @@ public interface ArticleService {
      * @param form 查询条件
      * @return 文章集合
      */
-    List<Article> list(PageRequestForm<Article> form);
+    List<Article> list(PageRequestForm<ArticleQueryListForm> form);
 
     /**
      * 新增文章对象

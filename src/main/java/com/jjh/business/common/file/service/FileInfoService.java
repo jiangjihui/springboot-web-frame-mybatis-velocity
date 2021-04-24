@@ -36,4 +36,13 @@ public interface FileInfoService {
      * @param request 请求
      */
     void downloadFile(String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request);
+
+    /**
+     * 写入文件到响应流
+     * @param filePath 文件路径
+     * @param delete 是否删除
+     * @param response 响应
+     * @param request 请求
+     */
+    void writeFile(String filePath, Boolean delete, HttpServletResponse response, HttpServletRequest request);
 }

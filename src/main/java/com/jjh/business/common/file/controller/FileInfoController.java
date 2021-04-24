@@ -71,7 +71,7 @@ public class FileInfoController extends BaseController {
             @ApiImplicitParam(paramType = "query", name = "fileName", dataType = "String", required = true, value = "文件名称"),
             @ApiImplicitParam(paramType = "query", name = "delete", dataType = "Boolean", required = true, value = "是否删除")
     })
-    @GetMapping("/download")
+    @GetMapping(value = "/download", produces = "application/octet-stream")
     public void downloadFile(String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request) {
         fileInfoService.downloadFile(fileName, delete, response, request);
     }

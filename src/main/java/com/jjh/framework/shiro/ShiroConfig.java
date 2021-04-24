@@ -44,8 +44,9 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/webjars/**", "anon");
         filterChainDefinitionMap.put("/swagger-resources/**","anon");
         filterChainDefinitionMap.put("/v2/**","anon");
+        filterChainDefinitionMap.put("/captcha/**","anon");
 
-        filterChainDefinitionMap.put("/article/**", "anon");
+        filterChainDefinitionMap.put("/demo/**", "anon");
         filterChainDefinitionMap.put("/gen/**", "anon");
 
         filterChainDefinitionMap.put("/static/**", "anon");

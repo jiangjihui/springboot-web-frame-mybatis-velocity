@@ -105,3 +105,16 @@ java -jar app.jar --spring.profiles.active=test
 ## FAQ  
 
 开发过程中常见问题的解答
+  
+
+**knife4j 登录接口AfterScript配置**  
+```javascript  
+var code=ke.response.data.code;
+if(code===0){
+    //判断,如果服务端响应code是0才执行操作
+    //获取token
+    var token=ke.response.data.result.token;
+    //1、如何参数是Header，则设置当前逻辑分组下的全局Header
+    ke.global.setAllHeader("X-Access-Token",token);
+}
+```  

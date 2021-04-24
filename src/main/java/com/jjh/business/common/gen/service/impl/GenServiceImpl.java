@@ -5,9 +5,9 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.jjh.business.common.gen.controller.form.GenFileForm;
 import com.jjh.business.common.gen.controller.form.GenEntityForm;
 import com.jjh.business.common.gen.controller.form.GenEntitySqlForm;
+import com.jjh.business.common.gen.controller.form.GenFileForm;
 import com.jjh.business.common.gen.controller.form.GenTargetPathForm;
 import com.jjh.business.common.gen.service.GenService;
 import com.jjh.common.exception.BusinessException;
@@ -243,6 +243,9 @@ public class GenServiceImpl implements GenService {
                     else if(Integer.class == fieldType){
                         columnType = "int(11)";
                     }
+                    else if(Long.class == fieldType){
+                        columnType = "bigint";
+                    }
                     else if(Double.class == fieldType){
                         columnType = "double";
                     }
@@ -293,7 +296,7 @@ public class GenServiceImpl implements GenService {
     }
 
     /**
-     * 
+     *
      * @param context
      * @param dto
      */
@@ -307,10 +310,18 @@ public class GenServiceImpl implements GenService {
 //        templateMap.put("Repository", "vm/java/Repository.java.vm");
         templateMap.put("Mapper", "vm/java/Mapper.java.vm");
         // 限制导出的文件
-        String targetFile = dto.getTargetFile();
-        for (Map.Entry<String, String> entry : templateMap.entrySet()) {
-            if (StrUtil.isBlank(targetFile) || StrUtil.equalsIgnoreCase(targetFile, entry.getKey())) {
-                templates.add(entry.getValue());
+        String targetFiles = dto.getTargetFile();
+        if (StrUtil.isBlank(targetFiles)) {
+            templates.addAll(templateMap.values());
+        }
+        else {
+            String[] targetFileList = targetFiles.split(",");
+            for (String targetFile : targetFileList) {
+                for (Map.Entry<String, String> entry : templateMap.entrySet()) {
+                    if (StrUtil.equalsIgnoreCase(targetFile, entry.getKey())) {
+                        templates.add(entry.getValue());
+                    }
+                }
             }
         }
 

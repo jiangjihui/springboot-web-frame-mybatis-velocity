@@ -1,8 +1,7 @@
 package com.jjh.business.common.gen.controller;
 
-import com.jjh.business.common.gen.controller.form.GenFileForm;
-import com.jjh.business.common.gen.controller.form.GenEntityForm;
 import com.jjh.business.common.gen.controller.form.GenEntitySqlForm;
+import com.jjh.business.common.gen.controller.form.GenFileForm;
 import com.jjh.business.common.gen.controller.form.GenTargetPathForm;
 import com.jjh.business.common.gen.service.GenService;
 import com.jjh.common.web.controller.BaseController;
@@ -34,23 +33,10 @@ public class GenController extends BaseController {
 
 
     /**
-     * 生成实体相关代码
-     * @param dto 实体类信息
-     */
-//    @ApiOperation("生成实体相关代码")
-    @PostMapping("/gen_code")
-    public SimpleResponseForm<String> genCode(GenEntityForm dto) {
-        dto.setAuthor("jjh");
-        genService.generatorCodeForEntity(dto);
-        return success();
-    }
-
-
-    /**
-     * 生成指定目录下的实体相关代码
+     * 代码生成
      * @param form
      */
-    @ApiOperation(value = "生成指定目录下的实体相关代码", notes = "包含到实体所在包下的目录")
+    @ApiOperation(value = "代码生成", notes = "包含到实体所在包下的目录")
     @GetMapping("/gen_code_to_target_path")
     public SimpleResponseForm<String> genCodeToTargetPath(@Valid GenTargetPathForm form) {
         genService.genCodeFromTargetPath(form);
