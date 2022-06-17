@@ -63,7 +63,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.74</version>
+            <version>1.2.83</version>
         </dependency>
         <!--在Spring Boot项目中轻松集成Druid数据库连接池和监控 https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter-->
         <dependency>
